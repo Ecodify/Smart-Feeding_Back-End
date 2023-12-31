@@ -2,64 +2,95 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+use Exception;
+use App\Models\User;
 use Illuminate\Http\Request;
+use App\Helpers\ApiHelpers;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Password;
+use Spatie\FlareClient\Api;
 
 class UsersController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function register(Request $request)
     {
-        //
+        try {
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|max:50|unique:users',
+                'password' => ['required', 'string', Password::defaults()],
+            ]);
+
+            if($validator->fails()) {
+                return ApiHelpers::error($validator->errors(), 'Ada data yang tidak valid!');
+            }
+
+            $validated = $validator->validated();
+
+            $validated['password'] = Hash::make($validated['password']);
+
+            User::create($validated);
+            event(new Registered($validated));
+
+            $user = User::where('email', $validated['email'])->first();
+            $token = $user->createToken('authToken')->plainTextToken;
+
+            $data = [
+                'access_token' => "Bearer $token",
+                'user' => $user
+            ];
+
+            return ApiHelpers::success($data, 'Berhasil Mendaftarkan Pengguna Baru!');
+        } catch (Exception $e) {
+            return ApiHelpers::error($e, 'Terjadi Kesalahan');
+        }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function login(Request $request)
     {
-        //
+        try {
+            $validator = Validator::make($request->all(), [
+                'email' => 'required|string',
+                'password' => 'required|string',
+            ]);
+
+            if ($validator->fails()) {
+                return ApiHelpers::error($validator->errors(), 'Ada data yang tidak valid!');
+            }
+
+            $validated = $validator->validated();
+
+            $user = User::where('email', $validated['email'])->first();
+
+            if (!$user || !Hash::check($validated['password'], $user->password)) {
+                return ApiHelpers::error([], 'Data Tidak Ditemukan atau Password Salah!', 401);
+            }
+
+            $token = $user->createToken('authToken')->plainTextToken;
+
+            $data = [
+                'access_token' => "Bearer $token",
+                'user' => $user
+            ];
+
+            return ApiHelpers::success($data, 'Berhasil Masuk!');
+        } catch (\Exception $e) {
+            return ApiHelpers::error($e, 'Terjadi Kesalahan');
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function logout(Request $request)
     {
-        //
-    }
+        try {
+            $token = $request->user()->currentAccessToken()->delete();
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+            return ApiHelpers::success($token, 'Token Dihapus!');
+        } catch (\Exception $error) {
+            return ApiHelpers::error($error, 'Terjadi Kesalahan');
+        }
     }
 }
