@@ -13,14 +13,13 @@ return new class extends Migration
     {
         Schema::create('devices', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->unique();
             $table->string('category');
             $table->string('population');
             $table->string('status');
-            $table->boolean('dht_status');
-            $table->boolean('relay_status');
-            $table->boolean('mq_status');
-            $table->rememberToken();
+            $table->boolean('dht');
+            $table->boolean('relay');
+            $table->boolean('mq');
             $table->timestamps();
         });
     }

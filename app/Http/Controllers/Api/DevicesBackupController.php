@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use Exception;
-use App\Models\User;
+use App\Models\DevicesBackup;
 use Illuminate\Http\Request;
 use App\Helpers\ApiHelpers;
 use App\Http\Controllers\Controller;
@@ -15,12 +15,12 @@ use Illuminate\Validation\Rules\Password;
 use Spatie\FlareClient\Api;
 class DevicesBackupController extends Controller
 {
-    public function add(Request $request)
+    public function backup(Request $request)
     {
         try{
 
             $data = [
-                '' => '',
+                'Notes' => 'FUNGSI INI BELUM BERJALAN',
             ];
 
             return ApiHelpers::success($data, 'Data di Backup!');
@@ -34,7 +34,7 @@ class DevicesBackupController extends Controller
         try{
 
             $data = [
-                '' => '',
+                'Notes' => 'FUNGSI INI BELUM BERJALAN',
             ];
 
             return ApiHelpers::success($data, 'Menampilkan seluruh data!');

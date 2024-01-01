@@ -22,7 +22,7 @@ Route::prefix('/v1')->group(function () {
 
     Route::get('/', function () {
         return response()->json([
-            'message' => 'Welcome to API v1',
+            'message' => 'Welcome to Smart Feeding API v1',
             'version' => 1,
         ]);
     })->name('v1.home');
@@ -32,29 +32,25 @@ Route::prefix('/v1')->group(function () {
         Route::post('/register', 'register');
         Route::post('/login', 'login');
         Route::get('/profile', 'profile')->middleware('auth:sanctum');
-        Route::delete('/logout', 'logout');
+        Route::delete('/logout', 'logout')->middleware('auth:sanctum');
     });
 
     Route::prefix('/devices')->controller(DevicesController::class)->group(function() {
         Route::post('/register', 'register');
-        Route::put('/update', 'update');
-        Route::get('/details', 'details');
-        Route::get('/sensor', 'sensor');
+        Route::post('/renew', 'renew');
+        Route::post('/update', 'update')->middleware('auth:sanctum');
+        Route::get('/details', 'details')->middleware('auth:sanctum');
+        Route::get('/sensor', 'sensor')->middleware('auth:sanctum');
     });
 
     Route::prefix('/devices_sensor')->controller(DevicesSensorsController::class)->group(function(){
-        Route::post('/add', 'add');
-        Route::get('/data', 'data');
-        Route::get('/current', 'current');
+        Route::post('/add', 'add')->middleware('auth:sanctum');
+        Route::get('/data', 'data')->middleware('auth:sanctum');
+        Route::get('/current', 'current')->middleware('auth:sanctum');
     });
 
-//    Route::prefix('/devices_backup')->controller(DevicesBackupController::class)->group(function(){
-//            Route::post('/backup', 'backup');
-//            Route::get('/data', 'data');
-//    });
-
-
-    Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-        return $request->user();
+    Route::prefix('/devices_backup')->controller(DevicesBackupController::class)->group(function(){
+            Route::post('/backup', 'backup');
+            Route::get('/data', 'data');
     });
 });

@@ -88,8 +88,6 @@ class UsersController extends Controller
     {
         try{
             $user = Auth::user();
-            $token = '';
-//            $user = '';
 
             $data = [
                 'user' => $user
