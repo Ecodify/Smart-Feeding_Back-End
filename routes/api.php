@@ -31,7 +31,7 @@ Route::prefix('/v1')->group(function () {
     Route::controller(UsersController::class)->group(function(){
         Route::post('/register', 'register');
         Route::post('/login', 'login');
-        Route::get('/profile', 'profile');
+        Route::get('/profile', 'profile')->middleware('auth:sanctum');
         Route::delete('/logout', 'logout');
     });
 

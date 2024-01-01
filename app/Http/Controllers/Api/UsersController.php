@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Helpers\ApiHelpers;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Validator;
@@ -86,11 +87,11 @@ class UsersController extends Controller
     public function profile(Request $request)
     {
         try{
+            $user = Auth::user();
             $token = '';
-            $user = '';
+//            $user = '';
 
             $data = [
-                'access_token' => "Bearer $token",
                 'user' => $user
             ];
             return ApiHelpers::success($data, 'Mohon Simpan Token Anda!');

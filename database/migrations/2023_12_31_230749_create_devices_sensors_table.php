@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('devices_sensors', function (Blueprint $table) {
             $table->id();
-            $table->string('year');
-            $table->string('month');
-            $table->string('day');
-            $table->string('timestamp');
+            $table->string('year')->nullable();
+            $table->string('month')->nullable();
+            $table->string('day')->nullable();
+            $table->string('timestamp')->nullable();
             $table->string('temperature');
             $table->string('humidity');
             $table->string('ammonia');
