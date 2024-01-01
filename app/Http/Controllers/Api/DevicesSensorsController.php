@@ -13,7 +13,8 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
 use Spatie\FlareClient\Api;
-class DevicesBackupController extends Controller
+
+class DevicesSensorsController extends Controller
 {
     public function add(Request $request)
     {
@@ -23,13 +24,13 @@ class DevicesBackupController extends Controller
                 '' => '',
             ];
 
-            return ApiHelpers::success($data, 'Data di Backup!');
+            return ApiHelpers::success($data, '');
         } catch (Exception $e) {
             return ApiHelpers::error($e, 'Terjadi Kesalahan');
         }
     }
 
-    public function data()
+    public function data(Request $request)
     {
         try{
 
@@ -37,7 +38,21 @@ class DevicesBackupController extends Controller
                 '' => '',
             ];
 
-            return ApiHelpers::success($data, 'Menampilkan seluruh data!');
+            return ApiHelpers::success($data, '');
+        } catch (Exception $e) {
+            return ApiHelpers::error($e, 'Terjadi Kesalahan');
+        }
+    }
+
+    public function current(Request $request)
+    {
+        try{
+
+            $data = [
+                '' => '',
+            ];
+
+            return ApiHelpers::success($data, '');
         } catch (Exception $e) {
             return ApiHelpers::error($e, 'Terjadi Kesalahan');
         }

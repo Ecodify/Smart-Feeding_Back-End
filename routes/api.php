@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UsersController;
 use App\Http\Controllers\Api\DevicesController;
+use App\Http\Controllers\Api\DevicesSensorsController;
 use App\Http\Controllers\Api\DevicesBackupController;
 
 /*
@@ -28,18 +29,30 @@ Route::prefix('/v1')->group(function () {
 
 
     Route::controller(UsersController::class)->group(function(){
-        Route::post('/login', 'login');
         Route::post('/register', 'register');
+        Route::post('/login', 'login');
+        Route::get('/profile', 'profile');
         Route::delete('/logout', 'logout');
     });
 
-    Route::controller(DevicesController::class)->group(function(){
-
+    Route::prefix('/devices')->controller(DevicesController::class)->group(function() {
+        Route::post('/register', 'register');
+        Route::put('/update', 'update');
+        Route::get('/details', 'details');
+        Route::get('/sensor', 'sensor');
     });
 
-    Route::controller(DevicesBackupController::class)->group(function(){
-
+    Route::prefix('/devices_sensor')->controller(DevicesSensorsController::class)->group(function(){
+        Route::post('/add', 'add');
+        Route::get('/data', 'data');
+        Route::get('/current', 'current');
     });
+
+//    Route::prefix('/devices_backup')->controller(DevicesBackupController::class)->group(function(){
+//            Route::post('/backup', 'backup');
+//            Route::get('/data', 'data');
+//    });
+
 
     Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         return $request->user();

@@ -7,12 +7,10 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Helpers\ApiHelpers;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
-use Spatie\FlareClient\Api;
 
 class UsersController extends Controller
 {
@@ -25,7 +23,8 @@ class UsersController extends Controller
                 'password' => ['required', 'string', Password::defaults()],
             ]);
 
-            if($validator->fails()) {
+            if($validator->fails())
+            {
                 return ApiHelpers::error($validator->errors(), 'Ada data yang tidak valid!');
             }
 
@@ -58,7 +57,8 @@ class UsersController extends Controller
                 'password' => 'required|string',
             ]);
 
-            if ($validator->fails()) {
+            if ($validator->fails())
+            {
                 return ApiHelpers::error($validator->errors(), 'Ada data yang tidak valid!');
             }
 
@@ -79,6 +79,22 @@ class UsersController extends Controller
 
             return ApiHelpers::success($data, 'Berhasil Masuk!');
         } catch (\Exception $e) {
+            return ApiHelpers::error($e, 'Terjadi Kesalahan');
+        }
+    }
+
+    public function profile(Request $request)
+    {
+        try{
+            $token = '';
+            $user = '';
+
+            $data = [
+                'access_token' => "Bearer $token",
+                'user' => $user
+            ];
+            return ApiHelpers::success($data, 'Mohon Simpan Token Anda!');
+        } catch (Exception $e) {
             return ApiHelpers::error($e, 'Terjadi Kesalahan');
         }
     }

@@ -17,7 +17,9 @@ return new class extends Migration
             $table->string('month');
             $table->string('day');
             $table->string('hour');
-            $table->string('data');
+            $table->string('temperature');
+            $table->string('humidity');
+            $table->string('ammonia');
             $table->timestamps();
         });
     }
