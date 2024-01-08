@@ -18,8 +18,9 @@ return new class extends Migration
             $table->string('population');
             $table->string('status');
             $table->boolean('dht');
-            $table->boolean('relay');
             $table->boolean('mq');
+            $table->boolean('relay_a');
+            $table->boolean('relay_b');
             $table->timestamps();
         });
     }

@@ -17,15 +17,21 @@ class Devices extends Model
         'population',
         'status',
         'dht',
-        'relay',
-        'mq'
+        'mq',
+        'relay_a',
+        'relay_b'
     ];
 
-    protected $hidden = [];
+    protected $hidden = [
+        'id',
+        'updated_at',
+        'created_at'
+    ];
 
     protected $casts = [
         'dht' =>'boolean',
-        'relay' =>'boolean',
-        'mq' =>'boolean'
+        'mq' =>'boolean',
+        'relay_a' =>'boolean',
+        'relay_b' =>'boolean'
         ];
 }

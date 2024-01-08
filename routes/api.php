@@ -50,7 +50,7 @@ Route::prefix('/v1')->group(function () {
     });
 
     Route::prefix('/devices_backup')->controller(DevicesBackupController::class)->group(function(){
-            Route::post('/backup', 'backup');
-            Route::get('/data', 'data');
+            Route::post('/backup', 'backup')->middleware('auth:sanctum');
+            Route::get('/data', 'data')->middleware('auth:sanctum');
     });
 });

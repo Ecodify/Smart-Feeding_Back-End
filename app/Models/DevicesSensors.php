@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
+use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class DevicesSensors extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, HasApiTokens;
 
     protected $table = 'devices_sensors';
     protected $fillable = [
@@ -21,5 +21,9 @@ class DevicesSensors extends Model
         'ammonia'
     ];
 
-    protected $hidden = [];
+    protected $hidden = [
+        'id',
+        'updated_at',
+        'created_at'
+    ];
 }

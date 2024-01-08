@@ -37,7 +37,7 @@ class UsersController extends Controller
             event(new Registered($validated));
 
             $user = User::where('email', $validated['email'])->first();
-            $token = $user->createToken('authToken')->plainTextToken;
+            $token = $user->createToken('users')->plainTextToken;
 
             $data = [
                 'access_token' => "Bearer $token",
@@ -71,7 +71,8 @@ class UsersController extends Controller
                 return ApiHelpers::error([], 'Data Tidak Ditemukan atau Password Salah!', 401);
             }
 
-            $token = $user->createToken('authToken')->plainTextToken;
+            $user->tokens()->delete();
+            $token = $user->createToken('users')->plainTextToken;
 
             $data = [
                 'access_token' => "Bearer $token",
@@ -89,10 +90,12 @@ class UsersController extends Controller
         try{
             $user = Auth::user();
 
-            $data = [
-                'user' => $user
-            ];
-            return ApiHelpers::success($data, 'Mohon Simpan Token Anda!');
+            if (!$user)
+            {
+                return ApiHelpers::error([], 'Unauthorized', 401);
+            }
+
+            return ApiHelpers::success($user, 'Mohon Simpan Token Anda!');
         } catch (Exception $e) {
             return ApiHelpers::error($e, 'Terjadi Kesalahan');
         }
@@ -101,9 +104,16 @@ class UsersController extends Controller
     public function logout(Request $request)
     {
         try {
-            $token = $request->user()->currentAccessToken()->delete();
+            $user = Auth::user();
 
-            return ApiHelpers::success($token, 'Token Dihapus!');
+            if (!$user)
+            {
+                return ApiHelpers::error([], 'Unauthorized', 401);
+            }
+
+            $data = $request->user()->currentAccessToken()->delete();
+
+            return ApiHelpers::success($data, 'Token Dihapus!');
         } catch (\Exception $error) {
             return ApiHelpers::error($error, 'Terjadi Kesalahan');
         }

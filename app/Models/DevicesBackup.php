@@ -15,5 +15,9 @@ class DevicesBackup extends Model
         '',
     ];
 
-    protected $hidden = [];
+    protected $hidden = [
+        'id',
+        'updated_at',
+        'created_at'
+    ];
 }
