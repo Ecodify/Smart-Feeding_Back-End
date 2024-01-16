@@ -13,15 +13,17 @@ return new class extends Migration
     {
         Schema::create('devices', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
             $table->string('name')->unique();
             $table->string('category');
             $table->string('population');
             $table->string('status');
-            $table->boolean('dht');
-            $table->boolean('mq');
+            $table->boolean('automatic');
             $table->boolean('relay_a');
             $table->boolean('relay_b');
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

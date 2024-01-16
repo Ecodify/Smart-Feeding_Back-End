@@ -16,22 +16,28 @@ class Devices extends Model
         'category',
         'population',
         'status',
-        'dht',
-        'mq',
+        'automatic',
         'relay_a',
         'relay_b'
     ];
 
     protected $hidden = [
-        'id',
         'updated_at',
         'created_at'
     ];
 
     protected $casts = [
-        'dht' =>'boolean',
-        'mq' =>'boolean',
+        'automatic' =>'boolean',
         'relay_a' =>'boolean',
         'relay_b' =>'boolean'
         ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function sensor()
+    {
+        return $this->hasMany(DevicesSensors::class);
+    }
 }

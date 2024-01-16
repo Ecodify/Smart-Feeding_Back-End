@@ -27,7 +27,6 @@ Route::prefix('/v1')->group(function () {
         ]);
     })->name('v1.home');
 
-
     Route::controller(UsersController::class)->group(function(){
         Route::post('/register', 'register');
         Route::post('/login', 'login');
@@ -36,21 +35,29 @@ Route::prefix('/v1')->group(function () {
     });
 
     Route::prefix('/devices')->controller(DevicesController::class)->group(function() {
-        Route::post('/register', 'register');
-        Route::post('/renew', 'renew');
-        Route::post('/update', 'update')->middleware('auth:sanctum');
-        Route::get('/details', 'details')->middleware('auth:sanctum');
-        Route::get('/sensor', 'sensor')->middleware('auth:sanctum');
+
+        Route::prefix('/auth')->group(function () {
+            Route::post('/register', 'register');
+            Route::post('/renew', 'renew');
+
+            Route::get('/all', 'all');
+            Route::get('/details', 'details');
+        });
+
+        Route::prefix('/status')->group(function () {
+            Route::post('/update', 'update')->middleware('auth:sanctum');
+            Route::get('/sensor', 'sensor')->middleware('auth:sanctum');
+        });
     });
 
-    Route::prefix('/devices_sensor')->controller(DevicesSensorsController::class)->group(function(){
+    Route::prefix('/data')->controller(DevicesSensorsController::class)->group(function(){
         Route::post('/add', 'add')->middleware('auth:sanctum');
-        Route::get('/data', 'data')->middleware('auth:sanctum');
+        Route::get('/all', 'all')->middleware('auth:sanctum');
         Route::get('/current', 'current')->middleware('auth:sanctum');
     });
 
-    Route::prefix('/devices_backup')->controller(DevicesBackupController::class)->group(function(){
-            Route::post('/backup', 'backup')->middleware('auth:sanctum');
-            Route::get('/data', 'data')->middleware('auth:sanctum');
-    });
+//    Route::prefix('/devices_backup')->controller(DevicesBackupController::class)->group(function(){
+//            Route::post('/backup', 'backup')->middleware('auth:sanctum');
+//            Route::get('/data', 'data')->middleware('auth:sanctum');
+//    });
 });

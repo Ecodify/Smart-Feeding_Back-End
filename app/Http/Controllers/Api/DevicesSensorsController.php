@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use Exception;
+use App\Models\Devices;
 use App\Models\DevicesSensors;
 use Illuminate\Http\Request;
 use App\Helpers\ApiHelpers;
@@ -14,12 +15,14 @@ class DevicesSensorsController extends Controller
     public function add(Request $request)
     {
         try {
-            $devices = Auth::user();
+            $auth = Auth::user();
 
-            if (!$devices)
+            if (!$auth)
             {
                 return ApiHelpers::error([], 'Unauthorized', 401);
             }
+
+            $devices = Devices::find($request->input('device_id'));
 
             $dateTime = now();
 
@@ -38,7 +41,7 @@ class DevicesSensorsController extends Controller
                 'ammonia' => $request->input('ammonia'),
             ];
 
-            $data = DevicesSensors::create($validated);
+            $data = $devices->sensor()->create($validated);
 
             return ApiHelpers::success($data, 'Berhasil mengirim data!');
         } catch (Exception $e) {
@@ -46,17 +49,19 @@ class DevicesSensorsController extends Controller
         }
     }
 
-    public function data()
+    public function all(Request $request)
     {
         try{
-            $devices = Auth::user();
+            $auth = Auth::user();
 
-            if (!$devices)
+            if (!$auth)
             {
                 return ApiHelpers::error([], 'Unauthorized', 401);
             }
 
-            $data = DevicesSensors::all();
+            $devices = Devices::find($request->header('device_id'));
+
+            $data = $devices->sensor;
 
             return ApiHelpers::success($data, 'Berhasil mengambil seluruh data!');
         } catch (Exception $e) {
@@ -64,7 +69,7 @@ class DevicesSensorsController extends Controller
         }
     }
 
-    public function current()
+    public function current(Request $request)
     {
         try {
             $devices = Auth::user();
@@ -73,7 +78,9 @@ class DevicesSensorsController extends Controller
                 return ApiHelpers::error([], 'Unauthorized', 401);
             }
 
-            $data = DevicesSensors::latest('id')->first();
+            $devices = Devices::find($request->header('device_id'));
+
+            $data = $devices->sensor()->latest()->first();
 
             return ApiHelpers::success($data, 'Berhasil mengambil terkini data!');
         } catch (Exception $e) {
