@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Models\Devices;
 
 return new class extends Migration
 {
@@ -13,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('devices_sensors', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('devices_id');
+            $table->foreignIdFor(Devices::class)->constrained();
             $table->string('year');
             $table->string('month');
             $table->string('day');
@@ -22,8 +23,6 @@ return new class extends Migration
             $table->string('humidity');
             $table->string('ammonia');
             $table->timestamps();
-
-            $table->foreign('devices_id')->references('id')->on('devices')->onDelete('cascade');
         });
     }
 
