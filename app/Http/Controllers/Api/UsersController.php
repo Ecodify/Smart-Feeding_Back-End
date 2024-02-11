@@ -19,8 +19,6 @@ class UsersController extends Controller
     public function register(Request $request)
     {
         try {
-            $uuid = Uuid::uuid4();
-
             $validator = Validator::make($request->all(), [
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|max:50|unique:users',
@@ -35,16 +33,15 @@ class UsersController extends Controller
             $validated = $validator->validated();
 
             $validated['password'] = Hash::make($validated['password']);
-            $validated['uuid'] = $uuid;
 
             User::create($validated);
             event(new Registered($validated));
 
             $user = User::where('email', $validated['email'])->first();
-//            $token = $user->createToken('users')->plainTextToken;
+            $token = $user->createToken('users')->plainTextToken;
 
             $data = [
-//                'access_token' => "Bearer $token",
+                'access_token' => "Bearer $token",
                 'user' => $user
             ];
 

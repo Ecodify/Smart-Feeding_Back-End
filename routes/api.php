@@ -52,12 +52,7 @@ Route::prefix('/v1')->group(function () {
 
     Route::prefix('/data')->controller(DevicesSensorsController::class)->group(function(){
         Route::post('/add', 'add')->middleware('auth:sanctum');
-        Route::get('/all', 'all')->middleware('auth:sanctum');
-        Route::get('/current', 'current')->middleware('auth:sanctum');
+        Route::get('/all', 'all');
+        Route::get('/current', 'current');
     });
-
-//    Route::prefix('/devices_backup')->controller(DevicesBackupController::class)->group(function(){
-//            Route::post('/backup', 'backup')->middleware('auth:sanctum');
-//            Route::get('/data', 'data')->middleware('auth:sanctum');
-//    });
 });
