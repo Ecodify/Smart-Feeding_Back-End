@@ -72,15 +72,9 @@ class DevicesSensorsController extends Controller
     public function current(Request $request)
     {
         try {
-            $devices = Auth::user();
-
-            if (!$devices) {
-                return ApiHelpers::error([], 'Unauthorized', 401);
-            }
-
             $devices = Devices::find($request->header('device_id'));
 
-            $data = $devices->sensor()->latest()->first();
+            $data = $devices->sensor()->orderBy('created_at', 'desc')->first();
 
             return ApiHelpers::success($data, 'Berhasil mengambil terkini data!');
         } catch (Exception $e) {

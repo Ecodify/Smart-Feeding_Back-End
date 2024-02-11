@@ -108,14 +108,15 @@ class DevicesController extends Controller
     public function update(Request $request)
     {
         try {
-            $devices = Auth::user();
+            $user = Auth::user();
 
-            if (!$devices)
+            if (!$user)
             {
                 return ApiHelpers::error([], 'Unauthorized', 401);
             }
 
             $validator = Validator::make($request->all(), [
+                'id' => 'required|integer',
                 'automatic' => 'required|boolean',
                 'relay_a' => 'required|boolean',
                 'relay_b' => 'required|boolean'
@@ -127,7 +128,7 @@ class DevicesController extends Controller
 
             $validated = $validator->validated();
 
-            $devices = Devices::where('id', $devices->id)->first();
+            $devices = Devices::where('id', $validated['id'])->first();
 
             if (!$devices) {
                 return ApiHelpers::error([], 'Device tidak ditemukan atau tidak memiliki izin!', 404);
@@ -140,6 +141,7 @@ class DevicesController extends Controller
             ]);
 
             $data = [
+                'id' => $devices->id,
                 'automatic' => $devices->automatic,
                 'relay_a' => $devices->relay_a,
                 'relay_b' => $devices->relay_b,
@@ -154,7 +156,7 @@ class DevicesController extends Controller
     public function details(Request $request)
     {
         try{
-            $data = Devices::findOrFail($request->header('id'));
+            $data = Devices::findOrFail($request->header('device_id'));
 
             return ApiHelpers::success($data, 'Ini adalah Detail Devices!');
         } catch (Exception $e) {
