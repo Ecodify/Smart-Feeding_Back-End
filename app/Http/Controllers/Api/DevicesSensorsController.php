@@ -52,16 +52,9 @@ class DevicesSensorsController extends Controller
     public function all(Request $request)
     {
         try{
-            $auth = Auth::user();
-
-            if (!$auth)
-            {
-                return ApiHelpers::error([], 'Unauthorized', 401);
-            }
-
             $devices = Devices::find($request->header('device_id'));
 
-            $data = $devices->sensor;
+            $data = $devices->sensor()->get();
 
             return ApiHelpers::success($data, 'Berhasil mengambil seluruh data!');
         } catch (Exception $e) {
